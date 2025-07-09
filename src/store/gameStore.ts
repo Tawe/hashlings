@@ -1,16 +1,13 @@
 import { create } from 'zustand';
 import { GameState, User, Monster, Action } from '../types/game';
 import { generateMonster } from '../utils/monsterGenerator';
-import { performAction } from '../utils/gameActions';
 import { signIn, signUp, signOut, getCurrentUser } from '../utils/auth';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import { 
   saveMonster, 
-  saveAction, 
   loadUser, 
   loadMonster, 
-  loadActions,
-  updateMonster
+  loadActions
 } from '../utils/database';
 import { 
   performActionServerSide, 

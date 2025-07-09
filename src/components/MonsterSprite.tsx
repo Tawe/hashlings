@@ -14,7 +14,6 @@ export const MonsterSprite: React.FC<MonsterSpriteProps> = ({
   className = ''
 }) => {
   const elementColor = getElementColor(monster.element);
-  const baseColor = `bg-${elementColor}`;
   
   // Simple SVG representation based on species
   const getSpritePath = () => {
