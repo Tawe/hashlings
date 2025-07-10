@@ -234,7 +234,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
           id: user!.id,
           username,
           createdAt: new Date(user!.created_at),
-          uuid: user!.uuid || ''
+          uuid: `uuid_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`
         };
         
         const monster = generateMonster(username);
@@ -271,7 +271,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         id: user!.id,
         username,
         createdAt: new Date(user!.created_at),
-        uuid: user!.uuid || ''
+        uuid: `uuid_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`
       };
       
       const monster = generateMonster(username);
@@ -341,7 +341,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
             id: user.id,
             username,
             createdAt: new Date(user.created_at),
-            uuid: user.uuid || ''
+            uuid: `uuid_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`
           };
           
           const monster = generateMonster(username);
