@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-import { User } from '@supabase/supabase-js';
+import { User as SupabaseUser } from '@supabase/supabase-js';
+import { User } from '../types/game';
 
 export async function signUp(email: string, password: string) {
   if (!isSupabaseConfigured || !supabase) {
@@ -65,25 +66,13 @@ export async function signOut() {
   if (error) throw error;
 }
 
-export async function getCurrentUser(): Promise<User | null> {
+export async function getCurrentUser(): Promise<SupabaseUser | null> {
   if (!isSupabaseConfigured || !supabase) {
     return null;
   }
   
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  // Fetch uuid from users table
-  const { data: userRow } = await supabase
-    .from('users')
-    .select('uuid')
-    .eq('id', user.id)
-    .single();
-  return {
-    id: user.id,
-    username: user.user_metadata?.username || user.email?.split('@')[0] || 'user',
-    createdAt: new Date(user.created_at),
-    uuid: userRow?.uuid || ''
-  };
+  return user;
 }
 
 export async function resetPassword(email: string) {
@@ -99,7 +88,7 @@ export async function resetPassword(email: string) {
 }
 
 // Listen for auth state changes
-export function onAuthStateChange(callback: (user: User | null) => void) {
+export function onAuthStateChange(callback: (user: SupabaseUser | null) => void) {
   if (!isSupabaseConfigured || !supabase) {
     return { data: { subscription: null } };
   }
