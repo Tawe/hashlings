@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { MonsterSprite } from './MonsterSprite';
 import { StatBar } from './StatBar';
 import { RenameMonster } from './RenameMonster';
 import { Heart, Zap, Shield, Brain, Eye, LogOut, Edit3 } from 'lucide-react';
 import { RenameUsername } from './RenameUsername';
-import { useEffect, useState } from 'react';
 import { AddFriendModal } from './AddFriendModal';
 
 export const MonsterProfile: React.FC = () => {
