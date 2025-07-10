@@ -182,7 +182,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         return;
       }
       // Update in Supabase users table
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('users')
         .update({ username: newName.trim() })
         .eq('id', user.id)

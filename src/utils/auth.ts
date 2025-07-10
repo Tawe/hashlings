@@ -1,6 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
 import { User as SupabaseUser } from '@supabase/supabase-js';
-import { User } from '../types/game';
 
 export async function signUp(email: string, password: string) {
   if (!isSupabaseConfigured || !supabase) {
