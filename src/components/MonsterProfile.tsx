@@ -4,10 +4,12 @@ import { MonsterSprite } from './MonsterSprite';
 import { StatBar } from './StatBar';
 import { RenameMonster } from './RenameMonster';
 import { Heart, Zap, Shield, Brain, Eye, LogOut, Edit3 } from 'lucide-react';
+import { RenameUsername } from './RenameUsername';
 
 export const MonsterProfile: React.FC = () => {
   const { monster, user, actions, performMonsterAction, setError, logout } = useGameStore();
   const [showRename, setShowRename] = useState(false);
+  const [showRenameUsername, setShowRenameUsername] = useState(false);
 
   if (!monster || !user) {
     return <div>No monster found!</div>;
@@ -48,7 +50,16 @@ export const MonsterProfile: React.FC = () => {
           </button>
           <div className="text-right">
             <p className="text-sm text-gray-400">Trainer</p>
-            <p className="text-lg font-semibold">{user.username}</p>
+            <div className="flex items-center justify-end gap-2">
+              <p className="text-lg font-semibold">{user.username}</p>
+              <button
+                onClick={() => setShowRenameUsername(true)}
+                className="p-1 text-gray-400 hover:text-purple-400 transition-colors duration-200 hover:scale-110"
+                title="Edit display name"
+              >
+                <Edit3 className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -222,6 +233,13 @@ export const MonsterProfile: React.FC = () => {
         <RenameMonster
           currentName={monster.name}
           onClose={() => setShowRename(false)}
+        />
+      )}
+      {/* Rename Username Modal */}
+      {showRenameUsername && (
+        <RenameUsername
+          currentName={user.username}
+          onClose={() => setShowRenameUsername(false)}
         />
       )}
     </div>

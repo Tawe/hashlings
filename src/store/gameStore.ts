@@ -13,6 +13,7 @@ import {
   performActionServerSide, 
   renameMonsterServerSide 
 } from '../utils/serverActions';
+import { supabase } from '../utils/supabaseClient';
 
 interface GameStore extends GameState {
   // Auth state
@@ -28,6 +29,7 @@ interface GameStore extends GameState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   resetGame: () => void;
+  renameUsername: (newName: string) => Promise<void>;
   
   // Auth actions
   login: (email: string, password: string) => Promise<void>;
@@ -149,6 +151,44 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   resetGame: () => {
     set(initialState);
+  },
+
+  renameUsername: async (newName: string) => {
+    const { user } = get();
+    if (!user) {
+      set({ error: 'No user found!' });
+      return;
+    }
+    if (newName.trim().length < 3 || newName.trim().length > 20) {
+      set({ error: 'Display name must be 3-20 characters.' });
+      return;
+    }
+    set({ isLoading: true, error: null });
+    try {
+      if (!supabase) {
+        set({ error: 'Supabase is not configured.', isLoading: false });
+        return;
+      }
+      // Update in Supabase users table
+      const { data, error } = await supabase
+        .from('users')
+        .update({ username: newName.trim() })
+        .eq('id', user.id)
+        .select();
+      if (error) {
+        set({ error: error.message, isLoading: false });
+        return;
+      }
+      set((state) => ({
+        user: { ...state.user!, username: newName.trim() },
+        isLoading: false
+      }));
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : 'Failed to update display name',
+        isLoading: false
+      });
+    }
   },
 
   // Auth actions
