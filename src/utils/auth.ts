@@ -71,7 +71,19 @@ export async function getCurrentUser(): Promise<User | null> {
   }
   
   const { data: { user } } = await supabase.auth.getUser();
-  return user;
+  if (!user) return null;
+  // Fetch uuid from users table
+  const { data: userRow } = await supabase
+    .from('users')
+    .select('uuid')
+    .eq('id', user.id)
+    .single();
+  return {
+    id: user.id,
+    username: user.user_metadata?.username || user.email?.split('@')[0] || 'user',
+    createdAt: new Date(user.created_at),
+    uuid: userRow?.uuid || ''
+  };
 }
 
 export async function resetPassword(email: string) {

@@ -69,7 +69,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const user: User = {
         id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         username,
-        createdAt: new Date()
+        createdAt: new Date(),
+        uuid: `uuid_${Math.random().toString(36).substr(2, 9)}` // Dummy uuid for local user creation
       };
       
       const monster = generateMonster(username);
@@ -222,7 +223,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       if (existingUser && existingMonster) {
         // User exists, load their data
         set({ 
-          user: existingUser, 
+          user: { ...existingUser, uuid: existingUser.uuid }, 
           monster: existingMonster,
           actions: existingActions
         });
@@ -232,7 +233,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
         const gameUser: User = {
           id: user!.id,
           username,
-          createdAt: new Date(user!.created_at)
+          createdAt: new Date(user!.created_at),
+          uuid: user!.uuid || ''
         };
         
         const monster = generateMonster(username);
@@ -268,7 +270,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const gameUser: User = {
         id: user!.id,
         username,
-        createdAt: new Date(user!.created_at)
+        createdAt: new Date(user!.created_at),
+        uuid: user!.uuid || ''
       };
       
       const monster = generateMonster(username);
@@ -327,7 +330,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         if (existingUser && existingMonster) {
           // User exists, load their data
           set({ 
-            user: existingUser, 
+            user: { ...existingUser, uuid: existingUser.uuid }, 
             monster: existingMonster,
             actions: existingActions
           });
@@ -337,7 +340,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
           const gameUser: User = {
             id: user.id,
             username,
-            createdAt: new Date(user.created_at)
+            createdAt: new Date(user.created_at),
+            uuid: user.uuid || ''
           };
           
           const monster = generateMonster(username);
