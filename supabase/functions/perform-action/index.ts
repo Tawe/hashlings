@@ -49,7 +49,7 @@ serve(async (req) => {
     }
 
     // Server-side validation
-    const today = new Date().toDateString()
+    const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD format
     const isNewDay = monster.last_action_date !== today
     const actionsToday = isNewDay ? 0 : monster.actions_today
 
