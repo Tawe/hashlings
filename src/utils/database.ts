@@ -19,7 +19,8 @@ export async function saveUser(user: User): Promise<void> {
     .upsert({
       id: user.id,
       username: user.username,
-      created_at: user.createdAt.toISOString()
+      created_at: user.createdAt.toISOString(),
+      uuid: user.uuid // Save uuid
     });
 
   if (error) throw error;
@@ -92,7 +93,8 @@ export async function loadUser(userId: string): Promise<User | null> {
   return {
     id: data.id,
     username: data.username,
-    createdAt: new Date(data.created_at)
+    createdAt: new Date(data.created_at),
+    uuid: data.uuid || '' // Load uuid, fallback to empty string if missing
   };
 }
 
