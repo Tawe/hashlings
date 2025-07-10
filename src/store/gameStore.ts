@@ -15,6 +15,11 @@ import {
 } from '../utils/serverActions';
 import { supabase } from '../utils/supabaseClient';
 
+interface Friend {
+  uuid: string;
+  username: string;
+}
+
 interface GameStore extends GameState {
   // Auth state
   authUser: SupabaseUser | null;
@@ -36,6 +41,11 @@ interface GameStore extends GameState {
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   initializeAuth: () => Promise<void>;
+
+  // Friends
+  friends: Friend[];
+  fetchFriends: () => Promise<void>;
+  addFriend: (friendCode: string) => Promise<void>;
 }
 
 const initialState: GameState = {
@@ -50,6 +60,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   ...initialState,
   authUser: null,
   isAuthenticated: false,
+  friends: [],
 
   createUser: (username: string) => {
     set({ isLoading: true, error: null });
@@ -341,5 +352,68 @@ export const useGameStore = create<GameStore>((set, get) => ({
     } catch (error) {
       console.error('Auth initialization failed:', error);
     }
+  },
+
+  // Friends
+  fetchFriends: async () => {
+    const { user } = get();
+    if (!user) return;
+    if (!supabase) return;
+    const { data, error } = await supabase
+      .from('friends')
+      .select('friend_id, users:friend_id(username, uuid)')
+      .eq('user_id', user.uuid);
+    if (error) {
+      set({ error: error.message });
+      return;
+    }
+    const friends = (data || []).map((row: any) => ({
+      uuid: row.users.uuid,
+      username: row.users.username
+    }));
+    set({ friends });
+  },
+
+  addFriend: async (friendCode: string) => {
+    const { user, friends } = get();
+    if (!user) {
+      set({ error: 'No user found!' });
+      return;
+    }
+    if (!supabase) {
+      set({ error: 'Supabase is not configured.' });
+      return;
+    }
+    if (friendCode === user.uuid) {
+      set({ error: 'You cannot add yourself as a friend.' });
+      return;
+    }
+    // Check if already a friend
+    if (friends.some(f => f.uuid === friendCode)) {
+      set({ error: 'Already friends with this user.' });
+      return;
+    }
+    // Check if user exists
+    const { data: friendUser, error: userError } = await supabase
+      .from('users')
+      .select('uuid, username')
+      .eq('uuid', friendCode)
+      .single();
+    if (userError || !friendUser) {
+      set({ error: 'No user found with that friend code.' });
+      return;
+    }
+    // Add to friends table
+    const { error: addError } = await supabase
+      .from('friends')
+      .insert({ user_id: user.uuid, friend_id: friendCode });
+    if (addError) {
+      set({ error: addError.message });
+      return;
+    }
+    // Update local state
+    set((state) => ({
+      friends: [...state.friends, { uuid: friendUser.uuid, username: friendUser.username }]
+    }));
   }
 })); 

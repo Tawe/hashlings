@@ -5,15 +5,22 @@ import { StatBar } from './StatBar';
 import { RenameMonster } from './RenameMonster';
 import { Heart, Zap, Shield, Brain, Eye, LogOut, Edit3 } from 'lucide-react';
 import { RenameUsername } from './RenameUsername';
+import { useEffect, useState } from 'react';
+import { AddFriendModal } from './AddFriendModal';
 
 export const MonsterProfile: React.FC = () => {
-  const { monster, user, actions, performMonsterAction, setError, logout } = useGameStore();
+  const { monster, user, actions, performMonsterAction, setError, logout, friends, fetchFriends } = useGameStore();
   const [showRename, setShowRename] = useState(false);
   const [showRenameUsername, setShowRenameUsername] = useState(false);
+  const [showAddFriend, setShowAddFriend] = useState(false);
 
   if (!monster || !user) {
     return <div>No monster found!</div>;
   }
+
+  useEffect(() => {
+    fetchFriends && fetchFriends();
+  }, [fetchFriends]);
 
   const handleAction = (actionType: 'feed' | 'train' | 'rest') => {
     try {
@@ -58,6 +65,16 @@ export const MonsterProfile: React.FC = () => {
                 title="Edit display name"
               >
                 <Edit3 className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="text-xs text-gray-500">Friend Code:</span>
+              <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded text-gray-700 select-all">{user.uuid}</span>
+              <button
+                className="ml-2 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                onClick={() => setShowAddFriend(true)}
+              >
+                Add Friend
               </button>
             </div>
           </div>
@@ -228,6 +245,23 @@ export const MonsterProfile: React.FC = () => {
         )}
       </div>
 
+      {/* Friends List */}
+      <div className="monster-card p-6 mt-8">
+        <h3 className="text-lg font-semibold mb-2 text-blue-700">Friends</h3>
+        {friends && friends.length > 0 ? (
+          <ul className="space-y-2">
+            {friends.map((f) => (
+              <li key={f.uuid} className="flex items-center gap-2">
+                <span className="font-semibold text-gray-800">{f.username}</span>
+                <span className="font-mono text-xs text-gray-400">{f.uuid}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500 text-sm">No friends yet.</p>
+        )}
+      </div>
+
       {/* Rename Modal */}
       {showRename && (
         <RenameMonster
@@ -241,6 +275,10 @@ export const MonsterProfile: React.FC = () => {
           currentName={user.username}
           onClose={() => setShowRenameUsername(false)}
         />
+      )}
+      {/* Add Friend Modal */}
+      {showAddFriend && (
+        <AddFriendModal onClose={() => setShowAddFriend(false)} />
       )}
     </div>
   );

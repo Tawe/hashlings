@@ -56,6 +56,7 @@ export interface User {
   id: string;
   username: string;
   createdAt: Date;
+  uuid: string; // Add this line for friend code support
 }
 
 export interface GameState {
