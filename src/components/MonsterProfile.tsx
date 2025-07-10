@@ -13,13 +13,13 @@ export const MonsterProfile: React.FC = () => {
   const [showRenameUsername, setShowRenameUsername] = useState(false);
   const [showAddFriend, setShowAddFriend] = useState(false);
 
-  if (!monster || !user) {
-    return <div>No monster found!</div>;
-  }
-
   useEffect(() => {
     fetchFriends && fetchFriends();
   }, [fetchFriends]);
+
+  if (!monster || !user) {
+    return <div>No monster found!</div>;
+  }
 
   const handleAction = (actionType: 'feed' | 'train' | 'rest') => {
     try {
