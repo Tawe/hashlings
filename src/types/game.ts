@@ -36,7 +36,6 @@ export interface Monster {
   stage: number;
   createdAt: Date;
   lastActionDate?: string;
-  actionsToday: number;
 }
 
 export interface Action {

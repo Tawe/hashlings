@@ -17,7 +17,6 @@ CREATE TABLE monsters (
     stage INTEGER NOT NULL DEFAULT 1,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     last_action_date TEXT,
-    actions_today INTEGER DEFAULT 0,
     UNIQUE(user_id)
 );
 

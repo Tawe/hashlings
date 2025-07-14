@@ -9,10 +9,7 @@ import {
   loadMonster, 
   loadActions
 } from '../utils/database';
-import { 
-  performActionServerSide, 
-  renameMonsterServerSide 
-} from '../utils/serverActions';
+
 import { supabase } from '../utils/supabaseClient';
 
 interface Friend {
@@ -28,8 +25,6 @@ interface GameStore extends GameState {
   // Actions
   createUser: (username: string) => void;
   setMonster: (monster: Monster) => void;
-  performMonsterAction: (actionType: 'feed' | 'train' | 'rest') => void;
-  renameMonster: (newName: string) => Promise<void>;
   addAction: (action: Action) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -93,59 +88,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ monster });
   },
 
-  performMonsterAction: async (actionType) => {
-    const { monster } = get();
-    if (!monster) {
-      set({ error: 'No monster found!' });
-      return;
-    }
 
-    try {
-      // Use server-side validation instead of client-side
-      const result = await performActionServerSide(actionType);
-      
-      if (!result.success) {
-        set({ error: result.error || 'Action failed' });
-        return;
-      }
-
-      set((state) => ({
-        monster: result.monster!,
-        actions: [result.action!, ...state.actions]
-      }));
-    } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : 'Action failed'
-      });
-    }
-  },
-
-  renameMonster: async (newName: string) => {
-    const { monster } = get();
-    if (!monster) {
-      set({ error: 'No monster found!' });
-      return;
-    }
-
-    try {
-      // Use server-side validation instead of client-side
-      const result = await renameMonsterServerSide(newName);
-      
-      if (!result.success) {
-        set({ error: result.error || 'Failed to rename monster' });
-        return;
-      }
-
-      set((state) => ({
-        monster: result.monster!,
-        actions: [result.action!, ...state.actions]
-      }));
-    } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : 'Failed to rename monster'
-      });
-    }
-  },
 
   addAction: (action: Action) => {
     set((state) => ({

@@ -96,8 +96,7 @@ export function generateMonster(username: string): Monster {
     baseSize,
     stats,
     stage: 1,
-    createdAt: new Date(),
-    actionsToday: 0
+    createdAt: new Date()
   };
 }
 

@@ -3,12 +3,12 @@ import { useGameStore } from '../store/gameStore';
 import { MonsterSprite } from './MonsterSprite';
 import { StatBar } from './StatBar';
 import { RenameMonster } from './RenameMonster';
-import { Heart, Zap, Shield, Brain, Eye, LogOut, Edit3 } from 'lucide-react';
+import { Shield, Eye, LogOut, Edit3 } from 'lucide-react';
 import { RenameUsername } from './RenameUsername';
 import { AddFriendModal } from './AddFriendModal';
 
 export const MonsterProfile: React.FC = () => {
-  const { monster, user, actions, performMonsterAction, setError, logout, friends, fetchFriends } = useGameStore();
+  const { monster, user, actions, setError, logout, friends, fetchFriends } = useGameStore();
   const [showRename, setShowRename] = useState(false);
   const [showRenameUsername, setShowRenameUsername] = useState(false);
   const [showAddFriend, setShowAddFriend] = useState(false);
@@ -21,13 +21,7 @@ export const MonsterProfile: React.FC = () => {
     return <div>No monster found!</div>;
   }
 
-  const handleAction = (actionType: 'feed' | 'train' | 'rest') => {
-    try {
-      performMonsterAction(actionType);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Action failed');
-    }
-  };
+
 
   const handleLogout = async () => {
     try {
@@ -40,7 +34,7 @@ export const MonsterProfile: React.FC = () => {
     }
   };
 
-  const canPerformAction = monster.actionsToday < 3;
+
 
   return (
     <div className="min-h-screen p-4">
@@ -110,9 +104,6 @@ export const MonsterProfile: React.FC = () => {
 
             <div className="text-center text-sm text-gray-700">
               <p>Stage {monster.stage} • Created {monster.createdAt.toLocaleDateString()}</p>
-              <p className="mt-2">
-                Actions today: {monster.actionsToday}/3
-              </p>
             </div>
           </div>
 
@@ -164,46 +155,9 @@ export const MonsterProfile: React.FC = () => {
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="monster-card p-6">
-              <h3 className="text-xl font-semibold mb-4">Daily Actions</h3>
-              
-              {!canPerformAction && (
-                <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-3 text-yellow-800 text-sm font-semibold flex items-center gap-2 mb-4">
-                  <span role="img" aria-label="clock">⏰</span>
-                  You've used all your actions for today! Come back tomorrow.
-                </div>
-              )}
 
-              <div className="grid grid-cols-1 gap-3">
-                <button
-                  onClick={() => handleAction('feed')}
-                  disabled={!canPerformAction}
-                  className="action-button bg-gradient-to-r from-green-600 to-emerald-600 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  <Heart className="w-5 h-5 mr-2" />
-                  Feed Monster
-                </button>
-                
-                <button
-                  onClick={() => handleAction('train')}
-                  disabled={!canPerformAction}
-                  className="action-button bg-gradient-to-r from-blue-600 to-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  <Zap className="w-5 h-5 mr-2" />
-                  Train Monster
-                </button>
-                
-                <button
-                  onClick={() => handleAction('rest')}
-                  disabled={!canPerformAction}
-                  className="action-button bg-gradient-to-r from-purple-600 to-pink-600 text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  <Brain className="w-5 h-5 mr-2" />
-                  Rest Monster
-                </button>
-              </div>
-            </div>
+
+
           </div>
         </div>
 

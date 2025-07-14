@@ -43,8 +43,7 @@ export async function saveMonster(monster: Monster): Promise<void> {
     stats: monster.stats,
     stage: monster.stage,
     created_at: monster.createdAt.toISOString(),
-    last_action_date: monster.lastActionDate || null,
-    actions_today: monster.actionsToday
+    last_action_date: monster.lastActionDate || null
   };
 
   const { error } = await supabase
@@ -123,8 +122,7 @@ export async function loadMonster(userId: string): Promise<Monster | null> {
     stats: data.stats,
     stage: data.stage,
     createdAt: new Date(data.created_at),
-    lastActionDate: data.last_action_date,
-    actionsToday: data.actions_today
+    lastActionDate: data.last_action_date
   };
 }
 
